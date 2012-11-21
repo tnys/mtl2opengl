@@ -1,8 +1,12 @@
 README
 
-mtl2opengl Version 1.1 (31 October 2012)
-Copyright © 2012 Ricardo Rendon Cepeda
-<http://www.rendoncepeda.com/>
+CHANGED BY TOM NYS
+Added code to support rotation by touching and pinch-to-zoom.
+
+
+mtl2opengl Version 1.2 (21 November 2012)
+Copyright © 2012 Ricardo Rendon Cepeda, Tom Nys
+<http://www.rendoncepeda.com/> and <http://www.netwalk.be/>
 
 
 ABOUT

@@ -9,6 +9,10 @@
 #import "ViewController.h"
 
 @interface ViewController ()
+{
+	CGFloat scale;
+	CGFloat lastScale;
+}
 @end
 
 struct AttributeHandles
@@ -39,10 +43,35 @@ struct UniformHandles
     struct UniformHandles   _uniforms;
 }
 
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	UITouch* t = [touches anyObject];
+	
+	self.rotateY.value += ([t locationInView:self.view].x - [t previousLocationInView:self.view].x);
+	self.rotateX.value += ([t locationInView:self.view].y - [t previousLocationInView:self.view].y);
+	
+}
+
+-(void)pinched:(UIPinchGestureRecognizer*)sender {
+	if([(UIPinchGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
+		lastScale = 1.0;
+	else
+	{
+		scale = scale - (lastScale - sender.scale);
+		lastScale = sender.scale;
+	}
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+	scale = 1.;
+	lastScale = 1.;
+
+	UIPinchGestureRecognizer* pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)];
+	[self.view addGestureRecognizer:pinch];
+
     // Initialize Context & OpenGL ES
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
@@ -123,7 +152,7 @@ struct UniformHandles
     _modelViewMatrix = GLKMatrix4Rotate(_modelViewMatrix, GLKMathDegreesToRadians(self.rotateX.value), 1.0, 0.0, 0.0);
     _modelViewMatrix = GLKMatrix4Rotate(_modelViewMatrix, GLKMathDegreesToRadians(self.rotateY.value), 0.0, 1.0, 0.0);
     _modelViewMatrix = GLKMatrix4Rotate(_modelViewMatrix, GLKMathDegreesToRadians(self.rotateZ.value), 0.0, 0.0, 1.0);
-    _modelViewMatrix = GLKMatrix4Scale(_modelViewMatrix, 0.33, 0.33, 0.33);
+    _modelViewMatrix = GLKMatrix4Scale(_modelViewMatrix, 0.33 * scale, 0.33 * scale, 0.33 * scale);
     
     // Normal Matrix
     // Transform object-space normals into eye-space
